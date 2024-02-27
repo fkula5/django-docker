@@ -1,0 +1,48 @@
+#!/bin/bash
+
+function up() {
+    echo "Starting containers..."
+    docker-compose up -d
+}
+
+function down() {
+    echo "Stopping containers..."
+    docker-compose down
+}
+
+function migrate() {
+    echo "Running migrations..."
+    docker-compose run --rm web python manage.py migrate
+}
+
+function createsuperuser() {
+    echo "Creating superuser..."
+    docker-compose run --rm web python manage.py createsuperuser
+}
+
+function shell() {
+    echo "Accessing Django shell..."
+    docker-compose run --rm web python manage.py shell
+}
+
+case "$1" in
+    up)
+        up
+        ;;
+    down)
+        down
+        ;;
+    migrate)
+        migrate
+        ;;
+    createsuperuser)
+        createsuperuser
+        ;;
+    shell)
+        shell
+        ;;
+    *)
+        echo "Usage: $0 {up|down|migrate|createsuperuser|shell}"
+        exit 1
+        ;;
+esac
