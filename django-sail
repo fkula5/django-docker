@@ -2,7 +2,7 @@
 
 function up() {
     echo "Starting containers..."
-    docker-compose up -d
+    docker-compose up "$@"
 }
 
 function down() {
@@ -10,39 +10,20 @@ function down() {
     docker-compose down
 }
 
-function migrate() {
-    echo "Running migrations..."
-    docker-compose run --rm web python manage.py migrate
+function exec() {
+    docker-compose exec web python manage.py "$@"
 }
 
-function createsuperuser() {
-    echo "Creating superuser..."
-    docker-compose run --rm web python manage.py createsuperuser
-}
-
-function shell() {
-    echo "Accessing Django shell..."
-    docker-compose run --rm web python manage.py shell
-}
-
-case "$1" in
+command="$1"
+shift
+case "$command" in
     up)
-        up
+        up "$@"
         ;;
     down)
         down
         ;;
-    migrate)
-        migrate
-        ;;
-    createsuperuser)
-        createsuperuser
-        ;;
-    shell)
-        shell
-        ;;
     *)
-        echo "Usage: $0 {up|down|migrate|createsuperuser|shell}"
-        exit 1
+        exec "$@"
         ;;
 esac
